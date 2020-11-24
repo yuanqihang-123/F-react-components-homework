@@ -9,6 +9,7 @@ import answersData from '../data/answers.json';
 class Chat extends Component {
   constructor(props, context) {
     super(props, context);
+    this.handleInputMessage = this.handleInputMessage.bind(this);
     this.state = {
       shop: {},
       messages: [],
@@ -27,13 +28,27 @@ class Chat extends Component {
     }, 1000);
   }
 
+  handleInputMessage(message,questionObj){
+    const result = answersData.find(answer=>answer.tags.includes(message));
+    let messages = null;
+    if (result){
+     messages = this.state.messages.concat(questionObj,result);
+    }else {
+     messages = this.state.messages.concat(questionObj);
+    }
+
+    this.setState({
+      messages
+    })
+  }
+
   render() {
     const { shop, messages } = this.state;
     return (
       <main className="Chat">
         <ChatHeader shop={shop} />
         <ChatBox messages={messages} />
-        <ChatInput />
+        <ChatInput handleInputMessage={this.handleInputMessage}/>
       </main>
     );
   }
